@@ -1,0 +1,61 @@
+--- speech_recognition/__init__.py	2021-05-29 16:50:54.870728015 +0200
++++ /tmp/speech_recognition/__init__.py	2021-05-29 16:57:03.758410617 +0200
+@@ -21,6 +21,8 @@
+ import time
+ import uuid
+ 
++from pynput.keyboard import Key, Listener
++
+ __author__ = "Anthony Zhang (Uberi)"
+ __version__ = "3.8.1"
+ __license__ = "BSD"
+@@ -488,20 +490,28 @@
+         elapsed_time = 0
+         offset_time = 0
+         offset_reached = False
+-        while True:  # loop for the total number of chunks needed
+-            if offset and not offset_reached:
+-                offset_time += seconds_per_buffer
+-                if offset_time > offset:
+-                    offset_reached = True
+-
+-            buffer = source.stream.read(source.CHUNK)
+-            if len(buffer) == 0: break
+ 
+-            if offset_reached or not offset:
+-                elapsed_time += seconds_per_buffer
+-                if duration and elapsed_time > duration: break
++        def on_release(key):
++            if key == Key.space:
++                return False;
++
++        with Listener(on_release=on_release) as listener:
++            while True:  # loop for the total number of chunks needed
++                if offset and not offset_reached:
++                    offset_time += seconds_per_buffer
++                    if offset_time > offset:
++                        offset_reached = True
++    
++                buffer = source.stream.read(source.CHUNK)
++                if len(buffer) == 0: break
++    
++                if offset_reached or not offset:
++                    elapsed_time += seconds_per_buffer
++                    if duration and elapsed_time > duration: break
++    
++                    frames.write(buffer)
+ 
+-                frames.write(buffer)
++                if not listener.isAlive(): break
+ 
+         frame_data = frames.getvalue()
+         frames.close()
+@@ -921,7 +931,7 @@
+ 
+         speech_config = {"encoding": "FLAC", "sampleRateHertz": audio_data.sample_rate, "languageCode": language}
+         if preferred_phrases is not None:
+-            speech_config["speechContext"] = {"phrases": preferred_phrases}
++            speech_config["speechContexts"] = {"phrases": preferred_phrases}
+         if show_all:
+             speech_config["enableWordTimeOffsets"] = True  # some useful extra options for when we want all the output
+         request = speech_service.speech().recognize(body={"audio": {"content": base64.b64encode(flac_data).decode("utf8")}, "config": speech_config})
