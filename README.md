@@ -16,7 +16,7 @@ python3 theater_review -f <text> (-n) (-v)
 ```
 
 The `<text>` value corresponds to the path to the file containing the text of the scene to review.
-The `-n` option enables the narrator. The `-v` option enable the voice recognition option.
+The `-n` option enables the narrator. The `-v` option enables the voice recognition option.
 
 If you use the voice recognition, **press the space bar** just after saying your text to send it to the API.
 
