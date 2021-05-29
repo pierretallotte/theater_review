@@ -3,7 +3,7 @@
 sudo apt install python3 pip python3-pyaudio portaudio19-dev
 pip3 install Unidecode SpeechRecognition google-cloud-texttospeech playsound pynput google-api-python-client oauth2client
 
-patch ~/.local/lib/python3.8/site-packages/speech_recognition/ speech_recognition.patch
+patch ~/.local/lib/python3.8/site-packages/speech_recognition/__init__.py speech_recognition.patch
 ```
 
 # Google API
