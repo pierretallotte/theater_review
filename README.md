@@ -33,3 +33,19 @@ Reply of the character 1.
 ```
 
 You can find examples in the `text` folder of this project.
+
+# Docker version
+
+A Docker version is available to avoid any change on the host system. This version does not support narration and speech recognition.
+To use it, you need to build the image first by running the following command in the same directory of the `Dockerfile` file:
+```
+docker build -t theater_review .
+```
+Then, you can run the application by mounting the `text` folder in the container:
+```
+docker run -it -v <path_to_your_text_folder>:/theater_review/text theater_review python3 theater_review.py -f text/<path_to_your_text_file>
+```
+For instance, using the text examples in this repository:
+```
+docker run -it -v ./text/:/theater_review/text theater_review python3 theater_review.py -f text/avare/2.txt
+```
